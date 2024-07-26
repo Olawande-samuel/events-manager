@@ -4,7 +4,7 @@ interface Props {
 	formId: string;
 	labelClassName?: string;
 	label: string;
-	type?: "email" | "password" | "text" | "datetime-local";
+	type?: "email" | "password" | "text" | "datetime-local" | "search";
 	placeholder?: string;
 	inputClassName?: string;
 	name: string;

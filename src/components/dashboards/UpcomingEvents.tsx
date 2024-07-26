@@ -6,7 +6,7 @@ import { Skeleton } from "../ui/skeleton";
 import Card from "./Card";
 import Events from "./events/Events";
 
-const UpComingEvents = () => {
+const UpComingEvents = ({ search = "" }: { search?: string }) => {
 	const { response, isLoading } = useEvents();
 	return (
 		<div className="">
@@ -22,9 +22,13 @@ const UpComingEvents = () => {
 								</div>
 							))
 					) : response && response.length > 0 ? (
-						response?.map((event: EventType) => (
-							<Events {...event} key={event.id} />
-						))
+						response
+							?.filter((item: EventType) =>
+								item.event_title
+									.toLowerCase()
+									.includes(search?.toLowerCase() as string)
+							)
+							.map((event: EventType) => <Events {...event} key={event.id} />)
 					) : (
 						<p className="text-center font-semibold">No Events</p>
 					)}

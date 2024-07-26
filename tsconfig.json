@@ -28,7 +28,8 @@
 		".next/types/**/*.ts",
 		"scripts/init-db.mjs",
 		"scripts/init-db.js",
-		"src/lib/db.js"
+		"src/lib/db.js",
+		"src/scripts/seed.mjs"
 	],
 	"exclude": ["node_modules"]
 }
