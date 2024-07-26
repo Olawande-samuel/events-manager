@@ -1,7 +1,10 @@
+"use client";
+
 import Container from "@/components/Container";
 import Header from "@/components/dashboards/Header";
 import MobileSidebar from "@/components/dashboards/MobileSidebar";
 import Sidebar from "@/components/dashboards/Sidebar";
+import withAuth from "@/hoc/withAuth";
 
 interface Props {
 	children: React.ReactNode;
@@ -22,4 +25,4 @@ const Layout = ({ children }: Props) => {
 		</div>
 	);
 };
-export default Layout;
+export default withAuth(Layout);
