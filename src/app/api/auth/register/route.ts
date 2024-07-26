@@ -4,9 +4,9 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
 	const { email, password, role } = await req.json();
-	const db = await openDb();
 	const hashedPassword = await hashPassword(password);
 	try {
+		const db = await openDb();
 		// check if email exists
 		const userExists = await db.get("SELECT * FROM users WHERE email = ?", [
 			email,
@@ -30,7 +30,7 @@ export async function POST(req: Request) {
 		);
 	} catch (error) {
 		return NextResponse.json(
-			{ message: "User registration failed" },
+			{ message: "User registration failed", error: JSON.stringify(error) },
 			{ status: 500 }
 		);
 	}
