@@ -1,36 +1,37 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Evently
 
 ## Getting Started
 
-First, run the development server:
+First, clone the Evently repo,
+
+Run the 'init-db.mjs' script to create new tables:
+
+```node
+node src/scripts/init-db.mjs
+```
+
+Afterwards, run
+
+```bash
+npm install
+
+```
+
+then
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+to start up the project on your local machine;
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The project requires that you create a .env file and any random string as the value of the 'NEXT_PRIVATE_JWT_SECRET' key.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+#### DESCRIPTION
+This project is an attempt at solving IntelRegion's assessment test.
+The project is built using Nextjs and Typescript. This is my go-to framework whenever I need to build a simple fullstack project, which this frontend assessment ends up becoming. Styling is done using TailwindCss and I brought in some shadcn components to help speed up the development process. I decided to use as little shadcn components as possible because I wanted the app to be a bare-metal as possible.
 
-## Learn More
+### Deployment
 
-To learn more about Next.js, take a look at the following resources:
+The app is currently deployed on Vercel and can be accessed via (https://events-manager.vercel.app)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
