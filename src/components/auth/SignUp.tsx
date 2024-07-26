@@ -29,9 +29,7 @@ const SignUp = () => {
 
 	useEffect(() => {
 		if (state?.status >= 200 && state?.status < 300) {
-			setItem("authToken", state.data.data.token);
-			setItem("user", state.data.data);
-			router.replace("/dashboard");
+			router.replace("/login");
 		}
 	}, [state]);
 
