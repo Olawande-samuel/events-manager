@@ -1,28 +1,20 @@
-import { openDb } from "@/lib/db";
 import { hashPassword } from "@/utils/hash";
+import { sql } from "@vercel/postgres";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
 	const { email, password, role } = await req.json();
-	const db = await openDb();
 	const hashedPassword = await hashPassword(password);
 	try {
-		// check if email exists
-		const userExists = await db.get("SELECT * FROM users WHERE email = ?", [
-			email,
-		]);
-		if (userExists) {
+		const userExists = await sql`SELECT * FROM users WHERE email = ${email}`;
+		if (userExists.rows.length > 0) {
 			return NextResponse.json(
 				{ message: "User with that email already exist" },
 				{ status: 400 }
 			);
 		}
 
-		await db.run("INSERT INTO users (email, password, role) VALUES (?, ?, ?)", [
-			email,
-			hashedPassword,
-			role,
-		]);
+		await sql`INSERT INTO users (email, password, role) VALUES (${email}, ${hashedPassword}, ${role})`;
 
 		return NextResponse.json(
 			{ message: "User Registered Successfully" },
@@ -30,7 +22,7 @@ export async function POST(req: Request) {
 		);
 	} catch (error) {
 		return NextResponse.json(
-			{ message: "User registration failed" },
+			{ message: "User registration failed", error: JSON.stringify(error) },
 			{ status: 500 }
 		);
 	}

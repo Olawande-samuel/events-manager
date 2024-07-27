@@ -1,5 +1,5 @@
-import { openDb } from "@/lib/db";
 import { verifyToken } from "@/utils/token";
+import { sql } from "@vercel/postgres";
 import { JwtPayload } from "jsonwebtoken";
 import { NextResponse } from "next/server";
 
@@ -23,31 +23,35 @@ export async function GET(request: Request, context: Context) {
 			{ status: 401 }
 		);
 	}
-	// connect to db
-	const db = await openDb();
 
 	// if user is admin return all
 	const userInfo = isValidBearer as JwtPayload;
 	if (userInfo?.role === "admin") {
-		const events = await db.get("SELECT * FROM events");
+		const events =
+			await sql`SELECT * FROM events WHERE id = ${context.params.id}`;
+
+		if (events.rows.length < 1) {
+			return NextResponse.json(
+				{ message: "Could not find event", data: null },
+				{ status: 200 }
+			);
+		}
 		return NextResponse.json(
-			{ message: "success", data: events ?? {} },
+			{ message: "success", data: events.rows[0] ?? {} },
 			{ status: 200 }
 		);
 	}
 
-	const userEvents = await db.get(
-		"SELECT * FROM events WHERE userId = ? AND id = ?",
-		[userInfo.id, context.params.id]
-	);
-	if (!userEvents) {
+	const userEvents =
+		await sql`SELECT * FROM events WHERE userId = ${userInfo.id} AND id = ${context.params.id}`;
+	if (userEvents.rows.length < 1) {
 		return NextResponse.json(
 			{ message: "Could not find event", data: null },
 			{ status: 200 }
 		);
 	}
 	return NextResponse.json(
-		{ message: "success", data: userEvents ?? {} },
+		{ message: "success", data: userEvents.rows[0] ?? {} },
 		{ status: 200 }
 	);
 }
@@ -77,22 +81,13 @@ export async function PATCH(request: Request, context: Context) {
 			{ status: 401 }
 		);
 	}
-	const db = await openDb();
 
 	const userInfo = isValidBearer as JwtPayload;
 
 	if (userInfo?.role === "admin") {
-		const res = await db.run(
-			"UPDATE events SET event_title = ?, event_location = ?, event_description = ?, event_starts = ?, event_ends = ? WHERE id = ?",
-			[
-				event_title,
-				event_location,
-				event_description,
-				event_starts,
-				event_ends,
-				context.params.id,
-			]
-		);
+		const res =
+			await sql`UPDATE events SET event_title = ${event_title}, event_location = ${event_location}, event_description = ${event_description}, event_starts = ${event_starts}, event_ends = ${event_ends} WHERE id = ${context.params.id}`;
+
 		if (!res) {
 			return NextResponse.json(
 				{ message: "could not update event" },
@@ -105,28 +100,16 @@ export async function PATCH(request: Request, context: Context) {
 		);
 	}
 
-	const userEvents = await db.get(
-		"SELECT * FROM events WHERE userId = ? AND id = ?",
-		[userInfo.id, context.params.id]
-	);
-
-	if (!userEvents) {
+	const userEvents =
+		await sql`SELECT * FROM events WHERE userId = ${userInfo.id} AND id = ${context.params.id}`;
+	if (userEvents.rows.length < 1) {
 		return NextResponse.json(
 			{ message: "Could not find event", data: null },
 			{ status: 200 }
 		);
 	}
-	const response = await db.run(
-		"UPDATE events SET event_title = ?, event_location = ?, event_description = ?, event_starts = ?, event_ends = ? WHERE id = ?",
-		[
-			event_title,
-			event_location,
-			event_description,
-			event_starts,
-			event_ends,
-			context.params.id,
-		]
-	);
+	const response =
+		await sql`UPDATE events SET event_title = ${event_title}, event_location = ${event_location}, event_description = ${event_description}, event_starts = ${event_starts}, event_ends = ${event_ends} WHERE id = ${context.params.id} AND userId = ${userInfo.id}`;
 	if (!response) {
 		return NextResponse.json(
 			{ message: "could not update event" },
@@ -156,13 +139,9 @@ export async function DELETE(request: Request, context: Context) {
 		);
 	}
 	const userInfo = isValidBearer as JwtPayload;
-	// connect to db
-	const db = await openDb();
 
 	if (userInfo?.role === "admin") {
-		const res = await db.run("DELETE FROM events WHERE id = ?", [
-			context.params.id,
-		]);
+		const res = await sql`DELETE FROM events WHERE id = ${context.params.id}`;
 		if (!res) {
 			return NextResponse.json(
 				{ message: "could not delete event" },
@@ -175,18 +154,16 @@ export async function DELETE(request: Request, context: Context) {
 		);
 	}
 
-	const userEvents = await db.get(
-		"SELECT * FROM events WHERE userId = ? AND id = ?",
-		[userInfo.id, context.params.id]
-	);
+	const userEvents =
+		await sql`SELECT * FROM events WHERE userId = ${userInfo.id} AND id = ${context.params.id}`;
 
-	if (!userEvents) {
-		return NextResponse.json({ message: "Unauthorised" }, { status: 401 });
+	if (userEvents.rows.length < 1) {
+		return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 	}
 
-	const response = await db.run("DELETE FROM events WHERE id = ?", [
-		context.params.id,
-	]);
+	const response =
+		await sql`DELETE FROM events WHERE id = ${context.params.id}`;
+	console.log(response);
 	if (!response) {
 		return NextResponse.json(
 			{ message: "could not delete event" },
@@ -194,7 +171,7 @@ export async function DELETE(request: Request, context: Context) {
 		);
 	}
 	return NextResponse.json(
-		{ message: "Event deleted successfully", },
+		{ message: "Event deleted successfully" },
 		{ status: 200 }
 	);
 }
