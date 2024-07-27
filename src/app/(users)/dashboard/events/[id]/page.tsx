@@ -4,7 +4,7 @@ import DeleteEvent from "@/components/dashboards/events/DeleteEvent";
 import EditEvent from "@/components/dashboards/events/EditEvent";
 import Loader from "@/components/Loader";
 import useEvent from "@/hooks/useEvent";
-import { Calendar } from "lucide-react";
+import { Calendar, MapPin } from "lucide-react";
 import moment from "moment";
 import Image from "next/image";
 
@@ -35,7 +35,7 @@ const Event = ({ params }: Props) => {
 				<div className="space-y-6">
 					<div className="space-y-3">
 						<h1 className="text-3xl font-bold">{response?.event_title}</h1>
-						<div className="flex items-center gap-1 text-slate-500">
+						<div className="flex items-center gap-1 text-slate-500 text-sm">
 							<span>
 								<Calendar color="#FF6600" />
 							</span>
@@ -43,6 +43,14 @@ const Event = ({ params }: Props) => {
 								{moment(response?.event_starts).format(
 									"dddd DD MMMM, YYYY, hh:mm a"
 								)}
+							</span>
+						</div>
+						<div className="flex items-center gap-1 text-slate-500 text-sm">
+							<span>
+								<MapPin color="#FF6600" />
+							</span>
+							<span>
+								{response?.event_location}
 							</span>
 						</div>
 					</div>

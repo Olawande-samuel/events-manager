@@ -4,7 +4,8 @@ import sqlite3 from "sqlite3";
 
 export async function openDb() {
 	return open({
-		filename: join(process.cwd(), "src", "app", "database.sqlite"),
+		// filename: "./database.sqlite",
+		filename: join(process.cwd(),  "src", "app", "database.sqlite"),
 		driver: sqlite3.Database,
 	});
 }

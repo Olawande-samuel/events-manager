@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 import SubmitButton from "../../FormSubmitButton";
 import Loader from "@/components/Loader";
+import moment from "moment";
 
 type Errors = {
 	event_title: string[];
@@ -44,7 +45,11 @@ const EditForm = ({ id }: { id: string }) => {
 
 	useEffect(() => {
 		if (response) {
-			setValues(response);
+			setValues({
+				...response,
+				event_starts: moment(response.event_starts).format("YYYY-MM-DDTHH:mm"),
+				event_ends: moment(response.event_ends).format("YYYY-MM-DDTHH:mm"),
+			});
 		}
 	}, [response]);
 
