@@ -1,7 +1,6 @@
-import { openDb } from "@/lib/db";
 import { hashPassword } from "@/utils/hash";
-import { NextResponse } from "next/server";
 import { sql } from "@vercel/postgres";
+import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
 	const { email, password, role } = await req.json();

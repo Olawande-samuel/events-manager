@@ -1,4 +1,3 @@
-import { openDb } from "@/lib/db";
 import { verifyToken } from "@/utils/token";
 import { sql } from "@vercel/postgres";
 import { JwtPayload } from "jsonwebtoken";
